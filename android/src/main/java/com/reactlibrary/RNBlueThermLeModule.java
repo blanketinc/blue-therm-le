@@ -97,6 +97,7 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
             map.putInt("batteryLevel", device.getBatteryLevel());
             array.pushMap(map);
         }
+        Log.e(TAG, "getAndSendDeviceList : " + array.size());
         sendEvent(reactContext, "deviceListUpdated", array);
     }
 
@@ -139,6 +140,11 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void stopScan() {
         mThermaLib.stopScanForDevices();
+    }
+
+    @ReactMethod
+    public void getDeviceList() {
+        getAndSendDeviceList();
     }
 
     @ReactMethod

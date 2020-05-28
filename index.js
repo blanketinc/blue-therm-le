@@ -26,6 +26,7 @@ export default {
   subscribeToConnectedDeviceUpdates,
   startScan: () => RNBlueThermLe.startScan(),
   stopScan: () => RNBlueThermLe.stopScan(),
+  getDeviceList: () => RNBlueThermLe.getDeviceList(),
   removeDeviceList: () => RNBlueThermLe.removeDeviceList(),
   connectToDevice: identifier => RNBlueThermLe.connectToDevice(identifier),
   disconnectFromDevice: identifier => RNBlueThermLe.disconnectFromDevice(identifier),
