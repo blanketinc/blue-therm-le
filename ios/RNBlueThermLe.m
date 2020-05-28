@@ -8,6 +8,10 @@
 {
   bool hasListeners;
 }
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (dispatch_queue_t)methodQueue
 {
@@ -15,23 +19,23 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onNewDeviceFound"];
+    return @[@"deviceListUpdated",@"notificationReceived"];
 }
 
 // Will be called when this module's first listener is added
--(void)startObserving {
+- (void)startObserving {
     hasListeners = YES;
 }
 
 // Will be called when this module's last listener is removed, or on dealloc.
--(void)stopObserving {
+- (void)stopObserving {
     hasListeners = NO;
 }
 
--(void)sendEmitterEvent {
+- (void)sendEmitterEvent {
     NSArray *devices = [self getConverDeviceListToDict];
     if (hasListeners) {
-      [self sendEventWithName:@"onNewDeviceFound" body:@{@"devices": devices}];
+      [self sendEventWithName:@"deviceListUpdated" body:devices];
     }
 }
 
@@ -91,45 +95,74 @@
     return devices;
 }
 
-- (void) startScanAll {
-    [ThermaLib.sharedInstance startDeviceScan];
-}
-
-- (void) stopDeviceScan {
-    [ThermaLib.sharedInstance stopDeviceScan];
-}
-
--(void) removeAllDevices {
-    ThermaLib *tl = ThermaLib.sharedInstance;
-    NSMutableArray<id<TLDevice>> *tempArray = [NSMutableArray array];
-    for( id<TLDevice> device in tl.deviceList ) {
-        [tempArray addObject:device];
-    }
-    for( id<TLDevice> device in tempArray ) {
-        [tl removeDevice:device];
-    }
-}
-
 - (void) startScanWithTransport:(TLTransport)transport retrieveSystemConnections:(BOOL)retrieveSystemConnections{
     if( ![ThermaLib.sharedInstance isTransportSupported:transport] ) {
-        NSLog(@"Transport not supported");
+        printf("Transport not supported");
     }
     else if( ![ThermaLib.sharedInstance isServiceConnected:transport] ) {
-        NSLog(@"Service not connected for transport");
+        printf("Service not connected for transport");
     }
     else {
-        NSLog(@"StartScanWithTransport successfully");
+        printf("StartScanWithTransport successfully");
         [ThermaLib.sharedInstance startDeviceScanWithTransport:transport retrieveSystemConnections:retrieveSystemConnections];
-        [self setNotificationListeners];
     }
 }
 
-- (void) connectToDevice: (id<TLDevice>) device {
-    if (device.connectionState == TLDeviceConnectionStateAvailable || device.connectionState == TLDeviceConnectionStateDisconnected) {
-        if( [ThermaLib.sharedInstance isServiceConnected:device.transportType]) {
-            [[ThermaLib sharedInstance] connectToDevice:device];
-            NSLog(@"ConnectToDevice successfully");
-        }
+- (void)deviceNotificationReceived:(NSNotification *)sender
+{
+    TLDeviceNotificationType notification = [sender.userInfo[ThermaLibNotificationReceivedNotificationTypeKey] integerValue];
+
+    NSString *notificationName;
+    NSNumber *number;
+    switch (notification) {
+        case TLDeviceNotificationTypeButtonPressed:
+            number = @1;
+            notificationName = @"Button Pressed";
+            break;
+
+        case TLDeviceNotificationTypeShutdown:
+            notificationName = @"Shutdown";
+            number = @2;
+            break;
+
+        case TLDeviceNotificationTypeInvalidSetting:
+            notificationName = @"Invalid Setting";
+            number = @3;
+            break;
+
+        case TLDeviceNotificationTypeInvalidCommand:
+            notificationName = @"Invalid Command";
+            number = @4;
+            break;
+
+        case TLDeviceNotificationTypeCommunicationError:
+            number = @5;
+            notificationName = @"Communication Error";
+            break;
+            
+        case TLDeviceNotificationTypeCheckpoint:
+            number = @7;
+            notificationName = @"Checkpoint";
+            break;
+            
+        case TLDeviceNotificationTypeRefreshRequest:
+            number = @8;
+            notificationName = @"Request to Refresh";
+            break;
+            
+        case TLDeviceNotificationTypeNone:
+            number = @0;
+            notificationName = @"NotificationType:None";
+            break;
+
+        default:
+            number = @0;
+            notificationName = [NSString stringWithFormat:@"Unknown notification (%ld)", (long)notification];
+            break;
+    }
+    if (hasListeners) {
+        printf("%s", [notificationName UTF8String]);
+      [self sendEventWithName:@"notificationReceived" body:number];
     }
 }
 
@@ -207,40 +240,82 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(scanDeviceWithBLETransport)
+RCT_EXPORT_METHOD(startScan)
 {
     [self startScanWithTransport:TLTransportBluetoothLE retrieveSystemConnections:NO];
 }
 
 RCT_EXPORT_METHOD(stopScan)
 {
-    [self stopDeviceScan];
+    [ThermaLib.sharedInstance stopDeviceScan];
 }
 
 RCT_EXPORT_METHOD(removeDeviceList)
 {
-    [self removeAllDevices];
+    ThermaLib *tl = ThermaLib.sharedInstance;
+    NSMutableArray<id<TLDevice>> *tempArray = [NSMutableArray array];
+    for( id<TLDevice> device in tl.deviceList ) {
+        [tempArray addObject:device];
+    }
+    for( id<TLDevice> device in tempArray ) {
+        [tl removeDevice:device];
+    }
 }
 
-RCT_EXPORT_METHOD(connectToSpecificDevice: (NSString *) deviceIdentifier)
+RCT_EXPORT_METHOD(connectToDevice: (NSString *) deviceIdentifier)
 {
-    NSArray * deviceList = [[ThermaLib sharedInstance] deviceList];
-    if (deviceList.count > 0) {
-        for (id<TLDevice> device in deviceList) {
-            NSString *identifier = device.deviceIdentifier;
-            if ([identifier isEqualToString:deviceIdentifier]) {
-                printf("connectToSpecificDevice successfully");
-                [self connectToDevice:device];
+    id<TLDevice> device = [[ThermaLib sharedInstance] deviceWithIdentifier:deviceIdentifier];
+    if (device) {
+        if (device.connectionState == TLDeviceConnectionStateAvailable || device.connectionState == TLDeviceConnectionStateDisconnected) {
+            if( [ThermaLib.sharedInstance isServiceConnected:device.transportType]) {
+                [[ThermaLib sharedInstance] connectToDevice:device];
+                [NSNotificationCenter.defaultCenter removeObserver:self name:ThermaLibNotificationReceivedNotificationName object:device];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceNotificationReceived:) name:ThermaLibNotificationReceivedNotificationName object:device];
+                NSLog(@"ConnectToDevice successfully");
             }
         }
     }
-    [self stopDeviceScan];
+}
+
+RCT_EXPORT_METHOD(disconnectFromDevice: (NSString *) deviceIdentifier)
+{
+    id<TLDevice> device = [[ThermaLib sharedInstance] deviceWithIdentifier:deviceIdentifier];
+    if (device) {
+        [ThermaLib.sharedInstance disconectFromDevice:device];
+    }
+}
+
+RCT_EXPORT_METHOD(removeDevice: (NSString *) deviceIdentifier)
+{
+    id<TLDevice> device = [[ThermaLib sharedInstance] deviceWithIdentifier:deviceIdentifier];
+    if (device) {
+        [ThermaLib.sharedInstance removeDevice:device];
+    }
+}
+
+RCT_EXPORT_METHOD(forgotDevice: (NSString *) deviceIdentifier)
+{
+    id<TLDevice> device = [[ThermaLib sharedInstance] deviceWithIdentifier:deviceIdentifier];
+    if (device) {
+        [ThermaLib.sharedInstance revokeDeviceAccess:device];
+        [ThermaLib.sharedInstance removeDevice:device];
+    }
 }
 
 RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)callback)
 {
     NSArray *devices = [self getConverDeviceListToDict];
     callback(@[[NSNull null], devices]);
+}
+
+RCT_EXPORT_METHOD(subscribeDeviceListCallBack)
+{
+    [self setNotificationListeners];
+}
+
+RCT_EXPORT_METHOD(unsubscribeDeviceListCallBack)
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
