@@ -1,5 +1,6 @@
+
 import { NativeModules } from 'react-native';
 
-const { CBBlueThermLe } = NativeModules;
+const { RNBlueThermLe } = NativeModules;
 
-export default CBBlueThermLe;
+export default RNBlueThermLe;
