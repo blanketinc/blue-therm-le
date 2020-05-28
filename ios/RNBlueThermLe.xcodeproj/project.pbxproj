@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04A580E4247FC1BE001C7E20 /* libThermaLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A580E3247FC1BE001C7E20 /* libThermaLib.a */; };
 		B3E7B58A1CC2AC0600A0062D /* RNBlueThermLe.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNBlueThermLe.m */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		04A580D9247FC110001C7E20 /* TLDateStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLDateStamp.h; sourceTree = "<group>"; };
+		04A580DA247FC110001C7E20 /* TLRemoteSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLRemoteSettings.h; sourceTree = "<group>"; };
+		04A580DB247FC110001C7E20 /* TLRange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLRange.h; sourceTree = "<group>"; };
+		04A580DC247FC110001C7E20 /* TLSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSensor.h; sourceTree = "<group>"; };
+		04A580DD247FC110001C7E20 /* TLDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLDevice.h; sourceTree = "<group>"; };
+		04A580DE247FC110001C7E20 /* TLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLUtils.h; sourceTree = "<group>"; };
+		04A580DF247FC110001C7E20 /* TLSimDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSimDevice.h; sourceTree = "<group>"; };
+		04A580E0247FC110001C7E20 /* TLSimSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSimSensor.h; sourceTree = "<group>"; };
+		04A580E1247FC110001C7E20 /* ThermaLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThermaLib.h; sourceTree = "<group>"; };
+		04A580E3247FC1BE001C7E20 /* libThermaLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libThermaLib.a; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRNBlueThermLe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNBlueThermLe.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* RNBlueThermLe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNBlueThermLe.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNBlueThermLe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNBlueThermLe.m; sourceTree = "<group>"; };
@@ -33,12 +44,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A580E4247FC1BE001C7E20 /* libThermaLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		04A580D8247FC110001C7E20 /* ThermaLib */ = {
+			isa = PBXGroup;
+			children = (
+				04A580D9247FC110001C7E20 /* TLDateStamp.h */,
+				04A580DA247FC110001C7E20 /* TLRemoteSettings.h */,
+				04A580DB247FC110001C7E20 /* TLRange.h */,
+				04A580DC247FC110001C7E20 /* TLSensor.h */,
+				04A580DD247FC110001C7E20 /* TLDevice.h */,
+				04A580DE247FC110001C7E20 /* TLUtils.h */,
+				04A580DF247FC110001C7E20 /* TLSimDevice.h */,
+				04A580E0247FC110001C7E20 /* TLSimSensor.h */,
+				04A580E1247FC110001C7E20 /* ThermaLib.h */,
+			);
+			path = ThermaLib;
+			sourceTree = "<group>";
+		};
+		04A580E2247FC1BE001C7E20 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				04A580E3247FC1BE001C7E20 /* libThermaLib.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -50,9 +86,11 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				04A580D8247FC110001C7E20 /* ThermaLib */,
 				B3E7B5881CC2AC0600A0062D /* RNBlueThermLe.h */,
 				B3E7B5891CC2AC0600A0062D /* RNBlueThermLe.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				04A580E2247FC1BE001C7E20 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,6 +133,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -204,12 +243,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-				"$(inherited)",
+					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNBlueThermLe;
 				SKIP_INSTALL = YES;
@@ -225,7 +267,10 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNBlueThermLe;
 				SKIP_INSTALL = YES;
