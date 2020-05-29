@@ -78,16 +78,54 @@
             } else {
                 temperature = @"--";
             }
+            NSString *modelNumber = device.modelNumber;
+            NSString *serialNumber = device.serialNumber;
             NSString *deviceName = device.deviceName;
             NSString *deviceIdentifier = device.deviceIdentifier;
             NSString *deviceTypeName = device.deviceTypeName;
             NSString *batteryLevel = [@(device.batteryLevel) stringValue];
+            NSString * connectionState;
+            switch (device.connectionState) {
+                case TLDeviceConnectionStateUnknown:
+                    connectionState = @"Unknown";
+                    break;
+                case TLDeviceConnectionStateAvailable:
+                    connectionState = @"Available";
+                    break;
+                case TLDeviceConnectionStateConnecting:
+                    connectionState = @"Connecting";
+                    break;
+                case TLDeviceConnectionStateConnected:
+                    connectionState = @"Connected";
+                    break;
+                case TLDeviceConnectionStateDisconnecting:
+                    connectionState = @"Disconnecting";
+                    break;
+                case TLDeviceConnectionStateDisconnected:
+                    connectionState = @"Disconnected";
+                    break;
+                case TLDeviceConnectionStateUnavailable:
+                    connectionState = @"Unavailable";
+                    break;
+                case TLDeviceConnectionStateUnsupported:
+                    connectionState = @"Unsupported";
+                    break;
+                case TLDeviceConnectionStateUnregistered:
+                    connectionState = @"Unregistered";
+                    break;
+                default:
+                    connectionState = @"Unknown";
+                    break;
+            }
             NSDictionary *dict = @{
+                @"modelNumber" : modelNumber,
+                @"serialNumber" : serialNumber,
                 @"deviceName" : deviceName,
                 @"deviceIdentifier": deviceIdentifier,
                 @"deviceTypeName": deviceTypeName,
                 @"batteryLevel": batteryLevel,
                 @"temperature": temperature,
+                @"connectionState": connectionState,
             };
             [devices addObject:dict];
         }

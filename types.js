@@ -9,3 +9,15 @@ export const ThermNotificationType = {
   CHECKPOINT: 7,
   REQUEST_REFRESH: 8,
 };
+
+export const ThermStatus = {
+  Unknown: 'Unknown',
+  Available: 'Available',
+  Connecting: 'Connecting',
+  Connected: 'Connected',
+  Disconnecting: 'Disconnecting',
+  Disconnected: 'Disconnected',
+  Unavailable: 'Unavailable',
+  Unsupported: 'Unsupported',
+  REQUEST_REFRESH: 'Unregistered',
+};
