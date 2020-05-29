@@ -11,15 +11,15 @@ export const ThermNotificationType = {
 };
 
 export const ThermConnectionStatus = {
-  Unknown: 'Unknown',
-  Available: 'Available',
-  Connecting: 'Connecting',
-  Connected: 'Connected',
-  Disconnecting: 'Disconnecting',
-  Disconnected: 'Disconnected',
-  Unavailable: 'Unavailable',
-  Unsupported: 'Unsupported',
-  REQUEST_REFRESH: 'Unregistered',
+  UNKNOWN: 'Unknown',
+  AVAILABLE: 'Available',
+  CONNECTING: 'Connecting',
+  CONNECTED: 'Connected',
+  DISCONNECTING: 'Disconnecting',
+  DISCONNECTED: 'Disconnected',
+  UNAVAILABLE: 'Unavailable',
+  UNSUPPORTED: 'Unsupported',
+  UNREGISTERED: 'Unregistered',
 };
 
 export const ThermUnit = {
@@ -28,4 +28,10 @@ export const ThermUnit = {
   PH: 'pH',
   RELATIVEHUMIDITY: '%rh',
   UNKNOWN: 'Unknown',
+};
+
+export const ThermBlueToothErrorCode = {
+  UNAVAILABLE: 1,
+  DISABLED: 2,
+  LE_DISABLED: 3,
 };

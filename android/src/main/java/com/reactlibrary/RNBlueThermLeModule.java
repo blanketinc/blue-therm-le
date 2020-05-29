@@ -235,21 +235,25 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
     public void checkBluetooth(Callback callback) {
         boolean bOK = true;
         String error = "";
+        int errorCode = 0;
         final BluetoothManager bleManager = (BluetoothManager) reactContext.getSystemService(Context.BLUETOOTH_SERVICE);
         if (bleManager == null) {
-            error = "Bluetooth is not available";
+            error = "Bluetooth is not available.";
+            errorCode = 1;
             bOK = false;
         } else {
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
                 error = "Bluetooth is not enabled. Real Bluetooth devices will not be accessible.";
+                errorCode = 2;
                 bOK = false;
             } else if (!reactContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
                 error = "Bluetooth Low Energy is not available on this Android phone/tablet. Real Bluetooth devices will not be accessible.";
+                errorCode = 3;
                 bOK = false;
             }
         }
-        callback.invoke(bOK, error);
+        callback.invoke(bOK, errorCode, error);
     }
 
     @ReactMethod
