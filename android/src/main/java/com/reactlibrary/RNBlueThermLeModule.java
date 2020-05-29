@@ -189,7 +189,7 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
     }
 
     private String getUnit(Sensor sensor) {
-        Device.Unit displayUnit = sensor.getDisplayUnit();
+        Device.Unit displayUnit = sensor.getReadingUnit();
         // Try to match
         String unit = "Unknown";
         switch (displayUnit) {
