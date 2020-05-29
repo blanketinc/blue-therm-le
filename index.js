@@ -1,4 +1,3 @@
-
 import { NativeEventEmitter, NativeModules } from 'react-native';
 
 const { RNBlueThermLe } = NativeModules;
@@ -22,6 +21,7 @@ export const subscribeToConnectedDeviceUpdates = (listener) => {
 };
 
 export default {
+  checkBluetooth: callback => RNBlueThermLe.checkBluetooth(callback),
   subscribeToDeviceListUpdates,
   subscribeToConnectedDeviceUpdates,
   startScan: () => RNBlueThermLe.startScan(),

@@ -1,4 +1,3 @@
-
 package com.reactlibrary;
 
 import java.util.Arrays;
@@ -14,16 +13,16 @@ import com.facebook.react.bridge.JavaScriptModule;
 public class RNBlueThermLePackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-      return Arrays.<NativeModule>asList(new RNBlueThermLeModule(reactContext));
-    }
-
-    // Deprecated from RN 0.47
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
-      return Collections.emptyList();
+        return Arrays.<NativeModule>asList(new RNBlueThermLeModule(reactContext));
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-      return Collections.emptyList();
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Class<? extends JavaScriptModule>> createJSModules() {
+        return Collections.emptyList();
     }
 }

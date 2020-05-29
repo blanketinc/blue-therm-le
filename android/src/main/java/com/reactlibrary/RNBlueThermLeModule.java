@@ -1,5 +1,9 @@
 package com.reactlibrary;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import uk.co.etiltd.thermalib.Device;
+import uk.co.etiltd.thermalib.DeviceType;
+import uk.co.etiltd.thermalib.Sensor;
 import uk.co.etiltd.thermalib.ThermaLib;
 import uk.co.etiltd.thermalib.ThermaLibException;
 
@@ -31,8 +37,9 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
 
     private ThermaLib.ClientCallbacks mThermalibCallbacks = new ThermaLib.ClientCallbacksBase() {
         @Override
-        public void onScanComplete(int errorCode, int numDevices) {
-            Log.e(TAG, "onScanComplete : " + errorCode + " " + numDevices);
+        public void onScanComplete(int transport, ThermaLib.ScanResult scanResult, int numDevices, String errorMsg) {
+            super.onScanComplete(transport, scanResult, numDevices, errorMsg);
+            Log.e(TAG, "onScanComplete : " + transport + " " + scanResult.getDesc() + " " + numDevices + "" + errorMsg);
             getAndSendDeviceList();
         }
 
@@ -86,19 +93,123 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
             WritableMap map = Arguments.createMap();
             map.putString("identifier", device.getIdentifier());
             map.putString("name", device.getDeviceName());
-            map.putString("type", device.getDeviceType().toString());
+            map.putString("type", getDeviceType(device));
             map.putString("manufactureName", device.getManufacturerName());
             map.putString("serialNumber", device.getSerialNumber());
             map.putString("modelNumber", device.getModelNumber());
-            map.putString("connectionState", device.getConnectionState().toString());
+            map.putString("connectionState", getConnectionState(device));
             map.putBoolean("isConnected", device.isConnected());
             map.putBoolean("isReady", device.isReady());
             map.putInt("maxSensorCount", device.getMaxSensorCount());
             map.putInt("batteryLevel", device.getBatteryLevel());
+            if (device.isReady() && device.getMaxSensorCount() > 0) {
+                Sensor sensor = device.getSensor(0);
+                if (sensor.isEnabled() && !sensor.isFault()) {
+                    map.putString("unit", getUnit(sensor));
+                    map.putDouble("temperature", sensor.getReading());
+                }
+            }
             array.pushMap(map);
         }
         Log.e(TAG, "getAndSendDeviceList : " + array.size());
         sendEvent(reactContext, "deviceListUpdated", array);
+    }
+
+    private String getDeviceType(Device device) {
+        DeviceType type = device.getDeviceType();
+        String deviceType = "Unknown";
+        switch(type) {
+            case UNKNOWN:
+                deviceType = "Unknown";
+                break;
+            case BT_ONE:
+                deviceType = "BlueTherm® One";
+                break;
+            case Q_BLUE:
+                deviceType = "ThermaQ® Blue";
+                break;
+            case PEN_BLUE:
+                deviceType = "Thermapen® Blue";
+                break;
+            case WIFI_Q:
+                deviceType = "ThermaQ® WiFi";
+                break;
+            case WIFI_TD:
+                deviceType = "ThermaData® WiFi";
+                break;
+            case RT_BLUE:
+                deviceType = "RayTemp Blue";
+                break;
+            case SIMULATED:
+                deviceType = "Simulated";
+                break;
+            default:
+                deviceType = "Unknown";
+                break;
+        }
+        return deviceType;
+    }
+
+    private String getConnectionState(Device device) {
+        Device.ConnectionState state = device.getConnectionState();
+        String connectionState = "Unknown";
+        switch(state) {
+            case UNKNOWN:
+                connectionState = "Unknown";
+                break;
+            case AVAILABLE:
+                connectionState = "Available";
+                break;
+            case CONNECTING:
+                connectionState = "Connecting";
+                break;
+            case CONNECTED:
+                connectionState = "Connected";
+                break;
+            case DISCONNECTING:
+                connectionState = "Disconnecting";
+                break;
+            case DISCONNECTED:
+                connectionState = "Disconnected";
+                break;
+            case UNAVAILABLE:
+                connectionState = "Unavailable";
+                break;
+            case UNSUPPORTED:
+                connectionState = "Unsupported";
+                break;
+            case UNREGISTERED:
+                connectionState = "Unregistered";
+                break;
+            default:
+                connectionState = "Unknown";
+                break;
+        }
+        return connectionState;
+    }
+
+    private String getUnit(Sensor sensor) {
+        Device.Unit displayUnit = sensor.getDisplayUnit();
+        // Try to match
+        String unit = "Unknown";
+        switch (displayUnit) {
+            case FAHRENHEIT:
+                unit = "°F";
+                break;
+            case CELSIUS:
+                unit = "°C";
+                break;
+            case PH:
+                unit = "pH";
+                break;
+            case RELATIVEHUMIDITY:
+                unit = "%rh";
+                break;
+            default:
+                unit = "Unknown";
+                break;
+        }
+        return unit;
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable Object params) {
@@ -117,6 +228,27 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "RNBlueThermLe";
+    }
+
+    @ReactMethod
+    public void checkBluetooth(Callback callback) {
+        boolean bOK = true;
+        String error = "";
+        final BluetoothManager bleManager = (BluetoothManager) reactContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        if (bleManager == null) {
+            error = "Bluetooth is not available";
+            bOK = false;
+        } else {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+                error = "Bluetooth is not enabled. Real Bluetooth devices will not be accessible.";
+                bOK = false;
+            } else if (!reactContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+                error = "Bluetooth Low Energy is not available on this Android phone/tablet. Real Bluetooth devices will not be accessible.";
+                bOK = false;
+            }
+        }
+        callback.invoke(bOK, error);
     }
 
     @ReactMethod
@@ -191,10 +323,4 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
             }
         }
     }
-
-//    @ReactMethod
-//    public void subscribeCallBack(String stringArgument, int numberArgument, Callback callback) {
-//        // TODO: Implement some actually useful functionality
-//        callback.invoke("Received numberArgument: " + numberArgument + " stringArgument: " + stringArgument);
-//    }
 }
