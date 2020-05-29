@@ -70,16 +70,22 @@
     NSArray * deviceList = [[ThermaLib sharedInstance] deviceList];
     if (deviceList.count > 0) {
         for (id<TLDevice> device in deviceList) {
-            NSString *temperature;
+            float temperature;
+            NSString *unit;
+            NSString *modelNumber;
+            NSString *serialNumber;
             if(device.isReady){
-                float reading1 = [device sensorAtIndex:1].reading;
-                TLDeviceUnit unit1 = [device sensorAtIndex:1].displayUnit;
-                temperature = [[device sensorAtIndex:1] isFault] ? @"FAULT" : [NSString stringWithFormat:@"%.1f %@", reading1, [self stringFromUnit:unit1]];
+                modelNumber = device.modelNumber;
+                serialNumber = device.serialNumber;
+                temperature = [device sensorAtIndex:1].reading;
+                TLDeviceUnit unit1 = [device sensorAtIndex:1].readingUnit;
+                unit = [self stringFromUnit:unit1];
             } else {
-                temperature = @"--";
+                temperature = 0;
+                unit = @"--";
+                modelNumber = @"";
+                serialNumber = @"";
             }
-            NSString *modelNumber = device.modelNumber;
-            NSString *serialNumber = device.serialNumber;
             NSString *deviceName = device.deviceName;
             NSString *deviceIdentifier = device.deviceIdentifier;
             NSString *deviceTypeName = device.deviceTypeName;
@@ -124,8 +130,9 @@
                 @"deviceIdentifier": deviceIdentifier,
                 @"deviceTypeName": deviceTypeName,
                 @"batteryLevel": batteryLevel,
-                @"temperature": temperature,
+                @"unit": unit,
                 @"connectionState": connectionState,
+                @"temperature": [NSString stringWithFormat:@"%.1f", temperature],
             };
             [devices addObject:dict];
         }
@@ -356,5 +363,13 @@ RCT_EXPORT_METHOD(unsubscribeDeviceListCallBack)
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+RCT_EXPORT_METHOD(checkBluetooth: (RCTResponseSenderBlock)callback)
+{
+    if ([ThermaLib.sharedInstance isServiceConnected:TLTransportBluetoothLE]) {
+        callback(@[@(true), @""]);
+    } else {
+        callback(@[@(false), @"Bluetooth is not enabled. Real Bluetooth devices will not be accessible."]);
+    }
+}
+
 @end
-  
