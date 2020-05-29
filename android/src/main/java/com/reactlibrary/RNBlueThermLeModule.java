@@ -205,6 +205,7 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
             case RELATIVEHUMIDITY:
                 unit = "%rh";
                 break;
+            case UNKNOWN:
             default:
                 unit = "Unknown";
                 break;

@@ -10,7 +10,7 @@ export const ThermNotificationType = {
   REQUEST_REFRESH: 8,
 };
 
-export const ThermStatus = {
+export const ThermConnectionStatus = {
   Unknown: 'Unknown',
   Available: 'Available',
   Connecting: 'Connecting',
@@ -20,4 +20,12 @@ export const ThermStatus = {
   Unavailable: 'Unavailable',
   Unsupported: 'Unsupported',
   REQUEST_REFRESH: 'Unregistered',
+};
+
+export const ThermUnit = {
+  FAHRENHEIT: '°F',
+  CELSIUS: '°C',
+  PH: 'pH',
+  RELATIVEHUMIDITY: '%rh',
+  UNKNOWN: 'Unknown',
 };
