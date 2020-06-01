@@ -39,21 +39,21 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
         @Override
         public void onScanComplete(int transport, ThermaLib.ScanResult scanResult, int numDevices, String errorMsg) {
             super.onScanComplete(transport, scanResult, numDevices, errorMsg);
-            Log.e(TAG, "onScanComplete : " + transport + " " + scanResult.getDesc() + " " + numDevices + "" + errorMsg);
+            Log.d(TAG, "onScanComplete : " + transport + " " + scanResult.getDesc() + " " + numDevices + "" + errorMsg);
             getAndSendDeviceList();
         }
 
         // new device discovered
         @Override
         public void onNewDevice(Device device, long timestamp) {
-            Log.e(TAG, "onNewDevice : " + device.getIdentifier() + " " + timestamp);
+            Log.d(TAG, "onNewDevice : " + device.getIdentifier() + " " + timestamp);
             getAndSendDeviceList();
         }
 
         // device connection state change
         @Override
         public void onDeviceConnectionStateChanged(Device device, Device.ConnectionState newState, long timestamp) {
-            Log.e(TAG, "onDeviceConnectionStateChanged : " + device.getIdentifier() + " " + newState.toString() + " " + timestamp);
+            Log.d(TAG, "onDeviceConnectionStateChanged : " + device.getIdentifier() + " " + newState.toString() + " " + timestamp);
             getAndSendDeviceList();
         }
 
@@ -61,7 +61,7 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
         // a call to a settings method such as setHighAlarm.
         @Override
         public void onDeviceUpdated(Device device, long timestamp) {
-            Log.e(TAG, "onDeviceUpdated : " + device.getIdentifier() + " " + timestamp);
+            Log.d(TAG, "onDeviceUpdated : " + device.getIdentifier() + " " + timestamp);
             getAndSendDeviceList();
         }
 
@@ -69,20 +69,20 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
         @Override
         public void onDeviceNotificationReceived(Device device, int notificationType, byte[] payload, long timestamp) {
             super.onDeviceNotificationReceived(device, notificationType, payload, timestamp);
-            Log.e(TAG, "onDeviceNotificationReceived : " + device.getIdentifier() + " " + notificationType);
+            Log.d(TAG, "onDeviceNotificationReceived : " + device.getIdentifier() + " " + notificationType);
             sendEvent(reactContext, "notificationReceived", notificationType);
         }
 
         @Override
         public void onDeviceRevokeRequestComplete(Device device, boolean succeeded, String errorMessage) {
-            Log.e(TAG, "onDeviceRevokeRequestComplete : " + device.getIdentifier() + " " + succeeded);
+            Log.d(TAG, "onDeviceRevokeRequestComplete : " + device.getIdentifier() + " " + succeeded);
             getAndSendDeviceList();
         }
 
         // called when a disconnection has occurred that is not correlated with client app action, such as a disconnection request.;
         @Override
         public void onUnexpectedDeviceDisconnection(Device device, String exceptionMessage, DeviceDisconnectionReason reason, long timestamp) {
-            Log.e(TAG, "Unexpected Disconnection : " + device.getIdentifier() + " " + exceptionMessage);
+            Log.d(TAG, "Unexpected Disconnection : " + device.getIdentifier() + " " + exceptionMessage);
         }
     };
 
@@ -111,7 +111,7 @@ public class RNBlueThermLeModule extends ReactContextBaseJavaModule {
             }
             array.pushMap(map);
         }
-        Log.e(TAG, "getAndSendDeviceList : " + array.size());
+        Log.d(TAG, "getAndSendDeviceList : " + array.size());
         sendEvent(reactContext, "deviceListUpdated", array);
     }
 
