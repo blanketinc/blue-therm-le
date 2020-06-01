@@ -87,6 +87,7 @@
                 serialNumber = @"";
             }
             NSString *deviceName = device.deviceName;
+            NSString *manufacturerName = device.manufacturerName;
             NSString *deviceIdentifier = device.deviceIdentifier;
             NSString *deviceTypeName = device.deviceTypeName;
             NSString *batteryLevel = [@(device.batteryLevel) stringValue];
@@ -124,11 +125,12 @@
                     break;
             }
             NSDictionary *dict = @{
+                @"identifier": deviceIdentifier,
+                @"name" : deviceName,
+                @"type": deviceTypeName,
+                @"manufacturerName": manufacturerName,
                 @"modelNumber" : modelNumber,
                 @"serialNumber" : serialNumber,
-                @"deviceName" : deviceName,
-                @"deviceIdentifier": deviceIdentifier,
-                @"deviceTypeName": deviceTypeName,
                 @"batteryLevel": batteryLevel,
                 @"unit": unit,
                 @"connectionState": connectionState,
@@ -368,7 +370,7 @@ RCT_EXPORT_METHOD(checkBluetooth: (RCTResponseSenderBlock)callback)
     if ([ThermaLib.sharedInstance isServiceConnected:TLTransportBluetoothLE]) {
         callback(@[@(true), @""]);
     } else {
-        callback(@[@(false), @"Bluetooth is not enabled. Real Bluetooth devices will not be accessible."]);
+        callback(@[@(false), @2]);
     }
 }
 
