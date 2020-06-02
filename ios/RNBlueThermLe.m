@@ -142,19 +142,6 @@
     return devices;
 }
 
-- (void) startScanWithTransport:(TLTransport)transport retrieveSystemConnections:(BOOL)retrieveSystemConnections{
-    if( ![ThermaLib.sharedInstance isTransportSupported:transport] ) {
-        printf("Transport not supported");
-    }
-    else if( ![ThermaLib.sharedInstance isServiceConnected:transport] ) {
-        printf("Service not connected for transport");
-    }
-    else {
-        printf("StartScanWithTransport successfully");
-        [ThermaLib.sharedInstance startDeviceScanWithTransport:transport retrieveSystemConnections:retrieveSystemConnections];
-    }
-}
-
 - (void)deviceNotificationReceived:(NSNotification *)sender
 {
     TLDeviceNotificationType notification = [sender.userInfo[ThermaLibNotificationReceivedNotificationTypeKey] integerValue];
@@ -289,7 +276,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(startScan)
 {
-    [self startScanWithTransport:TLTransportBluetoothLE retrieveSystemConnections:NO];
+    [ThermaLib.sharedInstance startDeviceScan];
 }
 
 RCT_EXPORT_METHOD(stopScan)
@@ -349,10 +336,9 @@ RCT_EXPORT_METHOD(forgotDevice: (NSString *) deviceIdentifier)
     }
 }
 
-RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getDeviceList)
 {
-    NSArray *devices = [self getConverDeviceListToDict];
-    callback(@[[NSNull null], devices]);
+    [self sendEmitterEvent];
 }
 
 RCT_EXPORT_METHOD(subscribeDeviceListCallBack)
@@ -367,10 +353,10 @@ RCT_EXPORT_METHOD(unsubscribeDeviceListCallBack)
 
 RCT_EXPORT_METHOD(checkBluetooth: (RCTResponseSenderBlock)callback)
 {
-    if ([ThermaLib.sharedInstance isServiceConnected:TLTransportBluetoothLE]) {
-        callback(@[@(true), @""]);
-    } else {
+    if (![ThermaLib.sharedInstance isBluetoothAvailable]) {
         callback(@[@(false), @2]);
+    } else {
+        callback(@[@(true), @""]);
     }
 }
 
