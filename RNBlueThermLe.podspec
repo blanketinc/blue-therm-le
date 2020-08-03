@@ -12,9 +12,7 @@ Pod::Spec.new do |s|
   s.author             = { "author" => "author@domain.cn" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/blanketinc/blue-therm-le.git", :tag => "master" }
-  s.source_files  = "ios/*.{h,m}"
-  s.requires_arc = true
-
+  s.source_files = 'ios/**/*.{h,m}'
 
   s.dependency "React"
   #s.dependency "others"
