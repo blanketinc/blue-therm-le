@@ -74,6 +74,7 @@
             NSString *unit;
             NSString *modelNumber;
             NSString *serialNumber;
+            NSString *manufacturerName;
             if(device.isReady){
                 modelNumber = device.modelNumber;
                 serialNumber = device.serialNumber;
@@ -87,7 +88,11 @@
                 serialNumber = @"";
             }
             NSString *deviceName = device.deviceName;
-            NSString *manufacturerName = device.manufacturerName;
+            if (device.manufacturerName) {
+                manufacturerName = device.manufacturerName;
+            } else {
+                manufacturerName = @"";
+            }
             NSString *deviceIdentifier = device.deviceIdentifier;
             NSString *deviceTypeName = device.deviceTypeName;
             NSString *batteryLevel = [@(device.batteryLevel) stringValue];
