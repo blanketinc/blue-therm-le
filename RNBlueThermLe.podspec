@@ -3,9 +3,6 @@ Pod::Spec.new do |s|
   s.name         = "RNBlueThermLe"
   s.version      = "1.0.0"
   s.summary      = "RNBlueThermLe"
-  s.description  = <<-DESC
-                  RNBlueThermLe
-                   DESC
   s.homepage     = "https://github.com/blanketinc/blue-therm-le.git"
   s.license      = "MIT"
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
@@ -16,6 +13,8 @@ Pod::Spec.new do |s|
 
   s.dependency "React"
   #s.dependency "others"
-
+  s.description  = <<-DESC
+                  RNBlueThermLe
+                   DESC
 end
 
