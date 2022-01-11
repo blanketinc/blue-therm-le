@@ -8,13 +8,13 @@ Pod::Spec.new do |s|
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
   s.author             = { "author" => "author@domain.cn" }
   s.platform     = :ios, "7.0"
-  s.source       = { :git => "https://github.com/blanketinc/blue-therm-le.git", :tag => "master" }
+  s.source       = { :git => "https://github.com/blanketinc/blue-therm-le.git", :tag => "0.63" }
   s.source_files = 'ios/**/*.{h,m,a}'
 
   s.dependency "React"
   #s.dependency "others"
   s.description  = <<-DESC
-                  RNBlueThermLe
+                  RNBlueThermLeBluetoothThermometerLibrary
                    DESC
 end
 
