@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   s.name         = "RNBlueThermLe"
   s.version      = "1.0.0"
   s.summary      = "RNBlueThermLe"
-  s.homepage     = "https://github.com/blanketinc/blue-therm-le.git"
+  s.homepage     = "https://github.com/blanketinc/blue-therm-le"
   s.license      = "MIT"
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
   s.author             = { "author" => "author@domain.cn" }
